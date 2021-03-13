@@ -1,2 +1,5 @@
-torch==1.6.0
 pandas==1.2.3
+scikit-learn==.24.1
+tensorboard==2.4.1
+torch==1.6.0
+tqdm==4.48.0
