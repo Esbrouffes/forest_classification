@@ -1,9 +1,10 @@
 from typing import Tuple
+
 import pandas as pd
 import torch
-from torch.utils.data import DataLoader, Dataset, TensorDataset
-
+from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
+
 import constants as CN
 
 
@@ -34,10 +35,10 @@ def load_test_data(filename: str) -> Tuple[torch.Tensor, torch.Tensor]:
 train_samples, train_labels = load_training_data(CN.TRAIN_FILE)
 X_train, X_val, y_train, y_val = train_test_split(train_samples, train_labels, test_size=0.20)
 train_dataset = TensorDataset(X_train, y_train)
-train_loader = DataLoader(train_dataset, batch_size=16)
+train_loader = DataLoader(train_dataset, batch_size=CN.BATCH_SIZE, drop_last=True)
 val_dataset = TensorDataset(X_val, y_val)
-val_loader = DataLoader(val_dataset, batch_size=16)
+val_loader = DataLoader(val_dataset, batch_size=CN.BATCH_SIZE, drop_last=True)
 
 test_samples = load_test_data(CN.TEST_FILE)
 test_dataset = TensorDataset(test_samples)
-test_loader = DataLoader(test_dataset, batch_size=16)
+test_loader = DataLoader(test_dataset, batch_size=CN.BATCH_SIZE, drop_last=True)
