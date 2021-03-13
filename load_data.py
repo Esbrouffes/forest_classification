@@ -3,6 +3,7 @@ import pandas as pd
 import torch
 from torch.utils.data import DataLoader, Dataset, TensorDataset
 
+from sklearn.model_selection import train_test_split
 import constants as CN
 
 
@@ -13,6 +14,8 @@ def load_training_data(filename: str) -> Tuple[torch.Tensor, torch.Tensor]:
     """
     df = pd.read_csv(filename)
     labels = df["Cover_Type"]
+    labels_tensor = labels.values
+    labels_tensor -= 1
     # The Id column is useless
     samples = df.drop(columns=["Cover_Type", "Id"])
     return torch.Tensor(samples.values), torch.Tensor(labels.values)
@@ -29,8 +32,11 @@ def load_test_data(filename: str) -> Tuple[torch.Tensor, torch.Tensor]:
 
 
 train_samples, train_labels = load_training_data(CN.TRAIN_FILE)
-train_dataset = TensorDataset(train_samples, train_labels)
+X_train, X_val, y_train, y_val = train_test_split(train_samples, train_labels, test_size=0.20)
+train_dataset = TensorDataset(X_train, y_train)
 train_loader = DataLoader(train_dataset, batch_size=16)
+val_dataset = TensorDataset(X_val, y_val)
+val_loader = DataLoader(val_dataset, batch_size=16)
 
 test_samples = load_test_data(CN.TEST_FILE)
 test_dataset = TensorDataset(test_samples)
