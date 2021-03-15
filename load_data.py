@@ -15,11 +15,11 @@ def load_training_data(filename: str) -> Tuple[torch.Tensor, torch.Tensor]:
     """
     df = pd.read_csv(filename)
     labels = df["Cover_Type"]
-    labels_tensor = labels.values
-    labels_tensor -= 1
+    labels_array = labels.values
+    labels_array -= 1
     # The Id column is useless
     samples = df.drop(columns=["Cover_Type", "Id"])
-    return torch.Tensor(samples.values), torch.Tensor(labels.values)
+    return torch.Tensor(samples.values), torch.Tensor(labels_array)
 
 
 def load_test_data(filename: str) -> Tuple[torch.Tensor, torch.Tensor]:
