@@ -41,6 +41,7 @@ for epoch in tqdm.tqdm(range(n_epochs)):
         loss.backward()
         epoch_loss += loss.item()
         optimizer.step()
+    epoch_loss /= len(train_loader)
     writer.add_scalar("Loss/train", epoch_loss, epoch)
 
     epoch_loss = 0
@@ -57,6 +58,7 @@ for epoch in tqdm.tqdm(range(n_epochs)):
             total_sample += x.size(0)
             loss = loss_function(out, y.long())
             epoch_loss += loss.item()
+    epoch_loss /= len(val_loader)
     writer.add_scalar("Accuracy", total_correct / total_sample, epoch)
     writer.add_scalar("Loss/val", epoch_loss, epoch)
 writer.close()
