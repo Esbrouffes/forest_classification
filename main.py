@@ -35,18 +35,13 @@ for x, _ in train_loader:
     break
 
 layers_list = [
-    # (1000, 500, 100, 50),
-    # (100, 500, 100, 50),
-    # (50, 100, 100, 50),
-    (500, 100, 10),
-    (50, 100, 10, 10),
-    # (400, 100, 50, 10),
-    # (1000, 500, 100, 50),
-    # (100, 100, 50, 20)
+    (1000, 500, 100, 50),
+    (100, 500, 100, 50),
+    (100, 50, 20)
 ]
 
 for layers in layers_list:
-    comment = f"Adam_{lr}_{layers}_{CN.BATCH_SIZE}_relu_regul_{regul}"
+    comment = f"Adam_{lr}_{layers}_{CN.BATCH_SIZE}_relu_regul_{regul}_fe"
     print(f"Model running : {comment}")
     model = train(layers=layers,
                   input_dim=input_dim,
