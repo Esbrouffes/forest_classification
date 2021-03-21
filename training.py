@@ -5,7 +5,7 @@ import torch.nn as nn
 import tqdm
 from torch.utils.tensorboard import SummaryWriter
 
-from load_data import train_loader, val_loader, test_loader
+from load_data import train_loader, val_loader, test_df, test_tensors
 from mlp import MLP
 import constants as CN
 
