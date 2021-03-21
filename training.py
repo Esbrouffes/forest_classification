@@ -1,4 +1,6 @@
 import argparse
+import os
+import time
 
 import torch
 import torch.nn as nn
@@ -41,7 +43,52 @@ def train(layers, lr, n_epochs, regul):
             loss = loss_function(out, y.long())
             loss.backward()
             epoch_loss += loss.item()
-    epoch_loss /= len(val_loader)
-    writer.add_scalar("Accuracy", total_correct / total_sample, epoch)
-    writer.add_scalar("Loss/val", epoch_loss, epoch)
-writer.close()
+            optimizer.step()
+        epoch_loss /= len(train_loader)
+        writer.add_scalar("Loss/train", epoch_loss, epoch)
+
+        epoch_loss = 0
+        total_correct = 0
+        total_sample = 0
+        with torch.set_grad_enabled(False):
+            model.eval()
+            for i, (x, y) in enumerate(val_loader):
+                optimizer.zero_grad()
+                out = model(x)
+                output_classes = out.argmax(dim=1)
+                correct = (output_classes == y).sum().float()
+                total_correct += correct
+                total_sample += x.size(0)
+                loss = loss_function(out, y.long())
+                epoch_loss += loss.item()
+        epoch_loss /= len(val_loader)
+        writer.add_scalar("Accuracy", total_correct / total_sample, epoch)
+        writer.add_scalar("Loss/val", epoch_loss, epoch)
+
+    with torch.set_grad_enabled(False):
+        model.eval()
+        output = model(test_tensors)
+        output_classes = output.argmax(dim=1)
+    # The position of the max starts at index 0
+    output_classes += 1
+    test_df["Cover_Type"] = output_classes
+    test_df.to_csv("submission.csv", header=True, columns=["Id", "Cover_Type"], index=False)
+
+    os.system(CN.KAGGLE_COMMAND.format(comment))
+    # time.sleep(4)
+    # os.system(CN.KAGGLE_SUBMISSIONS)
+
+    writer.close()
+
+
+layers = [
+    # (1000, 500, 100, 50),
+    # (100, 500, 100, 50),
+    # (50, 100, 100, 50),
+    (500, 100, 10),
+    # (400, 100, 50, 10),
+    # (1000, 500, 100, 50),
+    # (100, 100, 50, 20)
+]
+for layer in layers:
+    train(layer)
