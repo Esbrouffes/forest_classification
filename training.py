@@ -9,14 +9,16 @@ from mlp import MLP
 import constants as CN
 
 
-def train(layers, lr, n_epochs, regul, train_loader, val_loader, enable_tboard, comment):
+def train(layers, input_dim, lr, n_epochs, regul, train_loader, val_loader, enable_tboard, comment):
     if not enable_tboard:
         writer = SummaryWriter("runs/trash")
         print(f"Running without tensorboard logging")
     else:
         print(f"Running with tensorboard logging")
         writer = SummaryWriter(comment=comment)
-    model = MLP(CN.INPUT_DIM, CN.N_CLASS, layers=layers)
+    model = MLP(input_dim=input_dim,
+                out_dim=CN.N_CLASS,
+                layers=layers)
     print(model)
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=regul)
     loss_function = nn.CrossEntropyLoss()
@@ -57,7 +59,7 @@ def train(layers, lr, n_epochs, regul, train_loader, val_loader, enable_tboard, 
 
 
 def run_kaggle_submission(model, test_tensors, test_df, comment, submit=False):
-    print("Running with kaggle data")
+    print("Validation on Kaggle data")
     with torch.set_grad_enabled(False):
         model.eval()
         output = model(test_tensors)
