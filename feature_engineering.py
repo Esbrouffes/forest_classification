@@ -65,8 +65,14 @@ def feature_engineering(feature_data):
 
 
 def get_dataloaders(train_df):
+    """
+    Given the training dataframe, do the feature engineering
+    and return the training and validation dataloaders with
+    an 80/20 split
+    """
     labels = train_df["Cover_Type"]
     labels_array = labels.values
+    # The labels are transformed in index starting from 1
     labels_array -= 1
     samples = train_df.drop(columns=["Cover_Type", "Id"])
     train_samples = torch.Tensor(samples.values)
@@ -81,5 +87,9 @@ def get_dataloaders(train_df):
 
 
 def get_test_data(test_df):
+    """
+    Given the test dataframe, return it unaltered
+    along with its tensorized version
+    """
     df_no_id = test_df.drop(columns="Id")
     return test_df, torch.Tensor(df_no_id.values)

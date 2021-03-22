@@ -6,12 +6,18 @@ from feature_engineering import feature_engineering, get_dataloaders, get_test_d
 from training import train, run_kaggle_submission
 import constants as CN
 
+# Parse arguments
 parser = argparse.ArgumentParser()
+# If the argument is present, throw the log in the "trash" folder : for testing phases
 parser.add_argument("-t", action="store_false")
+# Specify the number of epochs
 parser.add_argument("-n", default=100, type=int)
+# Say whether or not the results should be submitted to Kaggle
 parser.add_argument("--kaggle", action="store_true", default=False)
 args = parser.parse_args()
 
+
+# Load an preprocess data
 train_df = pd.read_csv(CN.TRAIN_FILE)
 train_df = feature_engineering(train_df)
 train_loader, val_loader = get_dataloaders(train_df=train_df)
@@ -40,6 +46,7 @@ layers_list = [
     (100, 50, 20)
 ]
 
+# Try different nn architectures
 for layers in layers_list:
     comment = f"Adam_{lr}_{layers}_{CN.BATCH_SIZE}_relu_regul_{regul}_fe"
     print(f"Model running : {comment}")

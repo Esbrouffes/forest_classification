@@ -10,6 +10,9 @@ import constants as CN
 
 
 def train(layers, input_dim, lr, n_epochs, regul, train_loader, val_loader, enable_tboard, comment):
+    """
+    Run the training and validation loop on an MLP with the given parameters
+    """
     if not enable_tboard:
         writer = SummaryWriter("runs/trash")
         print(f"Running without tensorboard logging")
@@ -59,6 +62,9 @@ def train(layers, input_dim, lr, n_epochs, regul, train_loader, val_loader, enab
 
 
 def run_kaggle_submission(model, test_tensors, test_df, comment, submit=False):
+    """
+    Run the model over the test set and submit the resulting file to Kaggle if specified
+    """
     print("Validation on Kaggle data")
     with torch.set_grad_enabled(False):
         model.eval()
